@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+    <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
+    <script type="text/javascript" src="js/underscore.js"></script>
+    <script type="text/javascript" src="js/backbone.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+ <!-- шаблон для рамки  !-->
+    <script id="frame_template" type="text/template">
+        <img class="frame_content" unselectable="on" ondrag="return false" ondragdrop="return false" ondragstart="return false" onselectstart="return false"/>
+        <div class="corner_lefttop corner_point" sx="-1" sy="-1"></div>
+        <div class="corner_righttop corner_point" sx="1" sy="-1"></div>
+        <div class="corner_leftbottom corner_point" sx="-1" sy="1"></div>
+        <div class="corner_rightbottom corner_point" sx="1" sy="1"></div>
+    </script>
+</head>
+<body>
+<!-- кнопки загрузки данных  !-->
+<input id="input_image" type="file" style="display: none;" name="file" accept="image/*" />
+<div class="input_image_btn input_btn">Добавить фото</div>
+<div class="input_video_btn input_btn">Добавить видео</div>
+<!-- поле ввода url видео  !-->
+<div class="url_input">
+    <div class="url_input_form">
+        <div class="url_input_text">Скопируйте в это поле url вашего видео:</div>
+        <input class="text_url" type="text">
+        <input class="url_input_btn" id="btn_cancel" type="button" value="Отмена">
+        <input class="url_input_btn" id="btn_ok" type="button" value="Ок">
+    </div>
+</div>
+</body>
+</html>
