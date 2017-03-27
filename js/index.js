@@ -57,8 +57,9 @@ $(function(){
         template:_.template($('#frame_template').html()),
         events:{
             "mousedown .frame_content":"start_move",
-            "touchstart":"start_move",
-            "mousedown .corner_point":"start_resize"
+            "touchstart .frame_content":"start_move",
+            "mousedown .corner_point":"start_resize",
+            "touchstart .corner_point":"start_move"
         },
         render: function() {
             var datatype=this.model.get("type");
@@ -79,6 +80,7 @@ $(function(){
             el.attr('onselectstart','return false');
             $(".frame_content",el).attr('src',this.model.get('data'));
             $('body').bind('mouseup',{thisView : this}, this.stop_move);
+            $('body').bind('touchend',{thisView : this}, this.stop_move);
             $(".corner_point",el).hover(function(){
                 $.each($(".corner_point",el),function(){
                     $(this).addClass("hover");
@@ -97,13 +99,23 @@ $(function(){
             var model=this.model;
             var prevX=e.pageX,
                 prevY=e.pageY;
+            if(!prevX){
+                prevX=e.targetTouches[0].pageX,
+                prevY=e.targetTouches[0].pageY;
+            }
+            function calcMove(x,y){
+                var dx = x - prevX,
+                    dy = y - prevY;
+                prevX += dx;
+                prevY += dy;
+                model.move(dx, dy);
+            }
                 this.el.onmousemove = function (e) {
-                    var dx = e.pageX - prevX,
-                        dy = e.pageY - prevY;
-                    prevX += dx;
-                    prevY += dy;
-                    model.move(dx, dy);
-                }
+                    calcMove(e.pageX,e.pageY);
+                };
+            $('body').bind('touchmove',  function (e) {
+                calcMove(e.targetTouches[0].pageX, e.targetTouches[0].pageY);
+            });
         },
         start_resize: function(e){
             var sx=$(e.target).attr('sx'),
@@ -111,17 +123,28 @@ $(function(){
             var model=this.model;
             var prevX=e.pageX,
                 prevY=e.pageY;
-            window.onmousemove = function (e) {
-                var dx = e.pageX - prevX,
-                    dy = e.pageY - prevY;
+            if(!prevX){
+                prevX=e.targetTouches[0].pageX,
+                prevY=e.targetTouches[0].pageY;
+            }
+            function calcResize(x,y){
+                var dx = x - prevX,
+                    dy = y - prevY;
                 prevX += dx;
                 prevY += dy;
                 model.resize(dx, dy,sx,sy);
             }
+            window.onmousemove = function (e) {
+                calcResize(e.pageX,e.pageY);
+            };
+            $('body').bind('touchmove',  function (e) {
+                calcResize(e.targetTouches[0].pageX, e.targetTouches[0].pageY);
+            });
         },
         stop_move:function(e){
             e.data.thisView.el.onmousemove=null;
             window.onmousemove = null;
+            $('body').unbind('touchmove');
         }
     });
 
